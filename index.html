@@ -23,48 +23,47 @@
         <div id="result" class="mt-6 text-center"></div>
     </div>
 
-    <script>
-        function getResult() {
-            let roll = document.getElementById("rollNumber").value.trim();
-            let resultDiv = document.getElementById("result");
+   <script>
+    function getResult() {
+        let roll = document.getElementById("rollNumber").value.trim();
+        let resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "";
 
-            // Clear previous results
-            resultDiv.innerHTML = "";
-
-            if (roll === "") {
-                resultDiv.innerHTML = `<p class="text-red-500 font-medium">Please enter a roll number!</p>`;
-                return;
-            }
-
-            let url = "https://script.google.com/macros/s/AKfycbwQzR3KhEy4sfEIYpiIdZQxbKd2rjqHI1a3kAQd2OKGOp7XqrLSmA2I-Q4le45N-I73/exec?roll=" + roll;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        resultDiv.innerHTML = `<p class="text-red-500 font-medium">${data.error}</p>`;
-                    } else {
-                        resultDiv.innerHTML = `
-                            <div class="bg-green-100 p-4 rounded-lg mt-4">
-                                <h3 class="text-lg font-semibold text-green-600">Result for Roll: ${data.roll}</h3>
-                                <p><strong>Name:</strong> ${data.name}</p>
-                                <p><strong>English:</strong> ${data.english}</p>
-                                <p><strong>Bangla:</strong> ${data.bangla}</p>
-                                <p><strong>Math:</strong> ${data.math}</p>
-                                <p><strong>Biology:</strong> ${data.biology}</p>
-                                <p><strong>Physics:</strong> ${data.physics}</p>
-                                <p><strong>Chemistry:</strong> ${data.chemistry}</p>
-                                <p class="font-bold mt-2">Total Marks: <span class="text-green-700">${data.total}</span></p>
-                                <p class="font-bold">Rank: <span class="text-blue-700">${data.rank}</span></p>
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    resultDiv.innerHTML = `<p class="text-red-500 font-medium">Error fetching result. Please try again.</p>`;
-                    console.error("Fetch Error:", error);
-                });
+        if (roll === "") {
+            resultDiv.innerHTML = `<p class="text-red-500 font-medium">Please enter a roll number!</p>`;
+            return;
         }
-    </script>
+
+        let url = "https://script.google.com/macros/s/AKfycbyw7ZLemB6upaVa8rccneDON1fkqrNSyeOLMfxBK6nw4AcpgfAxIRjRoquUGYVrK3Hb/exec?roll=" + roll;
+
+        fetch(url, { method: 'GET', mode: 'cors' })  // Ensure CORS compatibility
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultDiv.innerHTML = `<p class="text-red-500 font-medium">${data.error}</p>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="bg-green-100 p-4 rounded-lg mt-4">
+                            <h3 class="text-lg font-semibold text-green-600">Result for Roll: ${data.roll}</h3>
+                            <p><strong>Name:</strong> ${data.name}</p>
+                            <p><strong>English:</strong> ${data.english}</p>
+                            <p><strong>Bangla:</strong> ${data.bangla}</p>
+                            <p><strong>Math:</strong> ${data.math}</p>
+                            <p><strong>Biology:</strong> ${data.biology}</p>
+                            <p><strong>Physics:</strong> ${data.physics}</p>
+                            <p><strong>Chemistry:</strong> ${data.chemistry}</p>
+                            <p class="font-bold mt-2">Total Marks: <span class="text-green-700">${data.total}</span></p>
+                            <p class="font-bold">Rank: <span class="text-blue-700">${data.rank}</span></p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<p class="text-red-500 font-medium">Failed to fetch results. Please try again.</p>`;
+                console.error("Fetch Error:", error);
+            });
+    }
+</script>
+
 </body>
 </html>
