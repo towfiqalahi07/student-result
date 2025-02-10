@@ -21,86 +21,82 @@
 
         <!-- Result Section -->
         <div id="result" class="mt-6 text-center"></div>
-  </div>
-   
-    
-   
-<div style="display: block;" class="mt-4 p-4 bg-gray-200 rounded-lg">
-    <p class="text-gray-700 font-medium">📊 Server Usage:</p>
-    <div class="w-full bg-gray-300 h-4 rounded-lg mt-2 relative">
-        <div id="serverUsageBar" class="h-4 rounded-lg bg-red-500 transition-all duration-500" style="width: 90%;"></div>
     </div>
-    <p id="serverUsageText" class="text-sm text-gray-600 mt-2">Currently at 90%</p>
-</div>
 
-   <script>
-    function getResult() {
-        let roll = document.getElementById("rollNumber").value.trim();
-        let resultDiv = document.getElementById("result");
-        resultDiv.innerHTML = "";
+    <div class="mt-4 p-4 bg-gray-200 rounded-lg">
+        <p class="text-gray-700 font-medium">📊 Server Usage:</p>
+        <div class="w-full bg-gray-300 h-4 rounded-lg mt-2 relative">
+            <div id="serverUsageBar" class="h-4 rounded-lg bg-red-500 transition-all duration-500" style="width: 90%;"></div>
+        </div>
+        <p id="serverUsageText" class="text-sm text-gray-600 mt-2">Currently at 90%</p>
+    </div>
 
-        if (roll === "") {
-            resultDiv.innerHTML = `<p class="text-red-500 font-medium">Please enter a roll number!</p>`;
-            return;
+    <script>
+        function getResult() {
+            let roll = document.getElementById("rollNumber").value.trim();
+            let resultDiv = document.getElementById("result");
+            // Clear previous results before displaying new one
+            resultDiv.innerHTML = "";
+
+            if (roll === "") {
+                resultDiv.innerHTML = `<p class="text-red-500 font-medium">Please enter a roll number!</p>`;
+                return;
+            }
+
+            let url = "https://script.google.com/macros/s/AKfycbyw7ZLemB6upaVa8rccneDON1fkqrNSyeOLMfxBK6nw4AcpgfAxIRjRoquUGYVrK3Hb/exec?roll=" + roll;
+
+            fetch(url, { method: 'GET', mode: 'cors' })  // Ensure CORS compatibility
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        resultDiv.innerHTML = `<p class="text-red-500 font-medium">${data.error}</p>`;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="bg-green-100 p-4 rounded-lg mt-4">
+                                <h3 class="text-lg font-semibold text-green-600">Result for Roll: ${data.roll}</h3>
+                                <p><strong>Name:</strong> ${data.name}</p>
+                                <p><strong>English:</strong> ${data.english}</p>
+                                <p><strong>Bangla:</strong> ${data.bangla}</p>
+                                <p><strong>Math:</strong> ${data.math}</p>
+                                <p><strong>Biology:</strong> ${data.biology}</p>
+                                <p><strong>Physics:</strong> ${data.physics}</p>
+                                <p><strong>Chemistry:</strong> ${data.chemistry}</p>
+                                <p class="font-bold mt-2">Total Marks: <span class="text-green-700">${data.total}</span></p>
+                                <p class="font-bold">Rank: <span class="text-blue-700">${data.rank}</span></p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p class="text-red-500 font-medium">Failed to fetch results. Please try again.</p>`;
+                    console.error("Fetch Error:", error);
+                });
         }
 
-        let url = "https://script.google.com/macros/s/AKfycbyw7ZLemB6upaVa8rccneDON1fkqrNSyeOLMfxBK6nw4AcpgfAxIRjRoquUGYVrK3Hb/exec?roll=" + roll;
-
-        fetch(url, { method: 'GET', mode: 'cors' })  // Ensure CORS compatibility
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    resultDiv.innerHTML = `<p class="text-red-500 font-medium">${data.error}</p>`;
-                } else {
-                    resultDiv.innerHTML = `
-                        <div class="bg-green-100 p-4 rounded-lg mt-4">
-                            <h3 class="text-lg font-semibold text-green-600">Result for Roll: ${data.roll}</h3>
-                            <p><strong>Name:</strong> ${data.name}</p>
-                            <p><strong>English:</strong> ${data.english}</p>
-                            <p><strong>Bangla:</strong> ${data.bangla}</p>
-                            <p><strong>Math:</strong> ${data.math}</p>
-                            <p><strong>Biology:</strong> ${data.biology}</p>
-                            <p><strong>Physics:</strong> ${data.physics}</p>
-                            <p><strong>Chemistry:</strong> ${data.chemistry}</p>
-                            <p class="font-bold mt-2">Total Marks: <span class="text-green-700">${data.total}</span></p>
-                            <p class="font-bold">Rank: <span class="text-blue-700">${data.rank}</span></p>
-                        </div>
-                    `;
-                }
-            })
-            .catch(error => {
-                resultDiv.innerHTML = `<p class="text-red-500 font-medium">Failed to fetch results. Please try again.</p>`;
-                console.error("Fetch Error:", error);
-            });
-    }
         function updateServerUsage() {
-        let usage = Math.random() < 0.85 ? Math.floor(Math.random() * 21) + 80 : Math.floor(Math.random() * 50) + 30;
-        let bar = document.getElementById("serverUsageBar");
-        let text = document.getElementById("serverUsageText");
+            let usage = Math.random() < 0.85 ? Math.floor(Math.random() * 21) + 80 : Math.floor(Math.random() * 50) + 30;
+            let bar = document.getElementById("serverUsageBar");
+            let text = document.getElementById("serverUsageText");
 
-        bar.style.width = usage + "%";
-        text.innerHTML = `Currently at ${usage}%`;
+            bar.style.width = usage + "%";
+            text.innerHTML = `Currently at ${usage}%`;
 
-        if (usage > 90) {
-            bar.classList.remove("bg-green-500", "bg-yellow-500");
-            bar.classList.add("bg-red-500");
-            text.classList.add("text-red-600");
-        } else if (usage > 70) {
-            bar.classList.remove("bg-green-500", "bg-red-500");
-            bar.classList.add("bg-yellow-500");
-            text.classList.add("text-yellow-600");
-        } else {
-            bar.classList.remove("bg-red-500", "bg-yellow-500");
-            bar.classList.add("bg-green-500");
-            text.classList.add("text-green-600");
+            if (usage > 90) {
+                bar.classList.remove("bg-green-500", "bg-yellow-500");
+                bar.classList.add("bg-red-500");
+                text.classList.add("text-red-600");
+            } else if (usage > 70) {
+                bar.classList.remove("bg-green-500", "bg-red-500");
+                bar.classList.add("bg-yellow-500");
+                text.classList.add("text-yellow-600");
+            } else {
+                bar.classList.remove("bg-red-500", "bg-yellow-500");
+                bar.classList.add("bg-green-500");
+                text.classList.add("text-green-600");
+            }
         }
-    }
 
-    setInterval(updateServerUsage, 2000); // Update every 2 seconds
-</script>
-
+        setInterval(updateServerUsage, 2000); // Update every 2 seconds
+    </script>
 </body>
 </html>
-
-
-rewrite this code format so that adding new contents comes below one by one
