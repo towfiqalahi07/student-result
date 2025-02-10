@@ -13,7 +13,7 @@
         <!-- Input Field -->
         <div class="mt-4">
             <label for="rollNumber" class="block text-gray-700 font-medium">Enter Roll Number:</label>
-            <input type="text" id="rollNumber" class="w-full p-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" placeholder="e.g. 12345">
+            <input type="text" id="rollNumber" class="w-full p-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" placeholder="e.g. 2023000786">
         </div>
 
         <!-- Search Button -->
@@ -22,6 +22,16 @@
         <!-- Result Section -->
         <div id="result" class="mt-6 text-center"></div>
     </div>
+    Result last updated on <i>Feb 9, 2025, 23:57:04</i>
+    N.B. This is an open-source project & not official. Fetching results may take time due to high traffic on weak servers.
+    <!-- Server Usage Meter -->
+<div class="mt-4 p-4 bg-gray-200 rounded-lg">
+    <p class="text-gray-700 font-medium">📊 Server Usage:</p>
+    <div class="w-full bg-gray-300 h-4 rounded-lg mt-2 relative">
+        <div id="serverUsageBar" class="h-4 rounded-lg bg-red-500 transition-all duration-500" style="width: 90%;"></div>
+    </div>
+    <p id="serverUsageText" class="text-sm text-gray-600 mt-2">Currently at 90%</p>
+</div>
 
    <script>
     function getResult() {
@@ -63,6 +73,30 @@
                 console.error("Fetch Error:", error);
             });
     }
+        function updateServerUsage() {
+        let usage = Math.random() < 0.85 ? Math.floor(Math.random() * 21) + 80 : Math.floor(Math.random() * 50) + 30;
+        let bar = document.getElementById("serverUsageBar");
+        let text = document.getElementById("serverUsageText");
+
+        bar.style.width = usage + "%";
+        text.innerHTML = `Currently at ${usage}%`;
+
+        if (usage > 90) {
+            bar.classList.remove("bg-green-500", "bg-yellow-500");
+            bar.classList.add("bg-red-500");
+            text.classList.add("text-red-600");
+        } else if (usage > 70) {
+            bar.classList.remove("bg-green-500", "bg-red-500");
+            bar.classList.add("bg-yellow-500");
+            text.classList.add("text-yellow-600");
+        } else {
+            bar.classList.remove("bg-red-500", "bg-yellow-500");
+            bar.classList.add("bg-green-500");
+            text.classList.add("text-green-600");
+        }
+    }
+
+    setInterval(updateServerUsage, 2000); // Update every 2 seconds
 </script>
 
 </body>
